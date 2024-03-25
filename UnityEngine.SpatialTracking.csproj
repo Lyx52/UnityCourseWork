@@ -41,9 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\TrackedPoseDriver\TrackedPoseDriver.cs" />
     <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\TrackedPoseDriver\AssemblyInfo.cs" />
     <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\TrackedPoseDriver\BasePoseProvider.cs" />
-    <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\TrackedPoseDriver\TrackedPoseDriver.cs" />
     <None Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\TrackedPoseDriver\UnityEngine.SpatialTracking.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.34f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

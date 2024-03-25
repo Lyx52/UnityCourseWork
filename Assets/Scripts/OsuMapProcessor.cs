@@ -1,38 +1,29 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using DefaultNamespace.Models;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace DefaultNamespace
 {
-    public class HitObject
+    public static class OsuMapProcessor
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public uint endedAt { get; set; }
-    }
-    public class OsuMapProcessor
-    {
-        private string filePath { get; set; }
-        private string beatmapDirectory { get; set; }
-        // Idk if this is true...
-        private readonly Vector2 osuScreenSize = new Vector2(640f, 480f);
-        public Queue<HitObject> _hitObjects;
-        private string audioFilePath { get; set; }
-        public AudioClip audioClip { get; private set; }
-        public OsuMapProcessor(string mapPath, string mapName)
-        {
-            this.filePath = $"{mapPath}\\{mapName}";
-            this.beatmapDirectory = mapPath;
-            this._hitObjects = new Queue<HitObject>();
-        }
+        public static readonly Vector2 OsuScreenSize = new Vector2(640f, 480f);
 
-        public void Process()
+        private static ConcurrentDictionary<string, AudioClip> _loadedClips =
+            new ConcurrentDictionary<string, AudioClip>();
+        
+        public static OsuMapVersion ProcessMapVersion(string filePath)
         {
+            var map = new OsuMapVersion();
+            map.MetadataFile = filePath;
+            map.Location = Path.GetDirectoryName(filePath);
             using (var sr = new StreamReader(filePath))
             {
                 while (!sr.EndOfStream)
@@ -42,18 +33,28 @@ namespace DefaultNamespace
                     {
                         case "[HitObjects]":
                         {
-                            ProcessHitObjects(sr);
+                            ProcessHitObjects(sr, map);
                         } break;
                         case "[General]":
                         {
-                            ProcessGeneralInfo(sr);
+                            ProcessGeneralInfo(sr, map);
+                        } break;
+                        case "[Metadata]":
+                        {
+                            ProcessMetadata(sr, map);
+                        } break;
+                        case "[Events]":
+                        {
+                            ProcessEvents(sr, map);    
                         } break;
                     }
                 }
             }
+
+            return map;
         }
 
-        private void ProcessGeneralInfo(StreamReader sr)
+        private static void ProcessGeneralInfo(StreamReader sr, OsuMapVersion map)
         {
             var line = sr.ReadLine();
             while (!sr.EndOfStream && line?.Length > 2)
@@ -63,13 +64,80 @@ namespace DefaultNamespace
                 switch (parts[0].Trim())
                 {
                     case "AudioFilename": 
-                        audioFilePath = $"{beatmapDirectory}\\{parts[1].Trim()}";
+                        map.AudioFile = $"{map.Location}\\{parts[1].Trim()}";
                         break;
                 }
                 line = sr.ReadLine();
             }      
         }
-        private void ProcessHitObjects(StreamReader sr)
+        
+        private static void ProcessEvents(StreamReader sr, OsuMapVersion map)
+        {
+            var line = sr.ReadLine();
+            var currentEventType = string.Empty;
+            while (!sr.EndOfStream && !string.IsNullOrEmpty(line))
+            {
+                if (string.IsNullOrEmpty(line))
+                {
+                    line = sr.ReadLine();
+                    continue;
+                }
+
+                if (line!.StartsWith("//"))
+                {
+                    currentEventType = line[2..].Trim();
+                    line = sr.ReadLine();
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(currentEventType))
+                {
+                    line = sr.ReadLine();
+                    continue;
+                }
+                
+                switch (currentEventType)
+                {
+                    case "Background and Video events":
+                    {
+                        var eventParts = line.Split(',');
+
+                        if (eventParts.Length < 3) break;
+                        var fileName = eventParts[2].Replace("\"", string.Empty);
+                        if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                            fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                        {
+                            map.BackgroundImage = Path.Join(map.Location, fileName);
+                        }
+                    } break;
+                }
+                line = sr.ReadLine();
+            }      
+        }
+        
+        private static void ProcessMetadata(StreamReader sr, OsuMapVersion map)
+        {
+            var line = sr.ReadLine();
+            while (!sr.EndOfStream && line?.Length > 2)
+            {
+                var parts = line.Split(':');
+                if (parts.Length < 2) break;
+                switch (parts[0].Trim())
+                {
+                    case "Title": 
+                        map.Title = parts[1].Trim();
+                        break;
+                    case "Version": 
+                        map.Version = parts[1].Trim();
+                        break;
+                    case "Artist": 
+                        map.Artist = parts[1].Trim();
+                        break;
+                }
+                line = sr.ReadLine();
+            }      
+        }
+        private static void ProcessHitObjects(StreamReader sr, OsuMapVersion map)
         {
             var line = sr.ReadLine();
             while (!sr.EndOfStream && line?.Length > 2)
@@ -77,7 +145,7 @@ namespace DefaultNamespace
                 var obj = ParseHitObject(line);
                 if (obj is not null)
                 {
-                    _hitObjects.Enqueue(obj);    
+                    map.HitObjects.Add(obj);    
                 }
                 
                 line = sr.ReadLine();
@@ -85,7 +153,7 @@ namespace DefaultNamespace
         }
 
         [CanBeNull]
-        private HitObject ParseHitObject(string line)
+        private static HitObject ParseHitObject(string line)
         {
             var parts = line.Split(',');
             if (parts.Length < 2) return null;
@@ -95,23 +163,37 @@ namespace DefaultNamespace
             return new HitObject()
             {
                 // From corner relative to center relative
-                X = (float)(x - Math.Floor(osuScreenSize.x / 2f)) / osuScreenSize.x,
-                Y = (float)(y - Math.Floor(osuScreenSize.y / 2f)) / osuScreenSize.y,
+                X = (float)(x - Math.Floor(OsuScreenSize.x / 2f)) / OsuScreenSize.x,
+                Y = (float)(y - Math.Floor(OsuScreenSize.y / 2f)) / OsuScreenSize.y,
                 endedAt = playbackOffset
             };
         }
-        public IEnumerator LoadClip()
+        
+        public static bool TryLoadBackground(this OsuMapVersion mapVersion, [CanBeNull] out Texture2D background)
         {
-            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(audioFilePath, AudioType.UNKNOWN))
+            background = new Texture2D(2, 2);
+            if (mapVersion.BackgroundImage is null) return false;
+            var imageData = File.ReadAllBytes(mapVersion.BackgroundImage);
+            background.LoadImage(imageData);
+            background.filterMode = FilterMode.Trilinear;
+            return true;
+        }
+        public static bool TryGetAudioClip(this OsuMapVersion mapVersion, [CanBeNull] out AudioClip audioClip)
+            => _loadedClips.TryGetValue(mapVersion.AudioFile, out audioClip);
+        public static IEnumerator LoadClip(this OsuMapVersion mapVersion)
+        {
+            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(mapVersion.AudioFile, AudioType.UNKNOWN))
             {
                 uwr.SendWebRequest();
-                while (!uwr.isDone) yield return new WaitForSeconds(5);
+                while (!uwr.isDone) yield return new WaitForSeconds(1);
                 try
                 {
                     if (uwr.result == UnityWebRequest.Result.ConnectionError) Debug.Log($"{uwr.error}");
                     else
                     {
-                        audioClip = DownloadHandlerAudioClip.GetContent(uwr);
+                        var clip = DownloadHandlerAudioClip.GetContent(uwr);
+                        if (!_loadedClips.TryAdd(mapVersion.AudioFile, clip))
+                            throw new ApplicationException("Audio clip is already loaded!");
                     }
                 }
                 catch (Exception err)
