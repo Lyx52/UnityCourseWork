@@ -42,13 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CircleSpawner.cs" />
-    <Compile Include="Assets\Scripts\CircleHandler.cs" />
-    <Compile Include="Assets\Scripts\OsuMapProvider.cs" />
     <Compile Include="Assets\Scripts\Models\OsuMap.cs" />
-    <Compile Include="Assets\Scripts\Models\OsuMapVersion.cs" />
-    <Compile Include="Assets\Scripts\Models\HitObject.cs" />
     <Compile Include="Assets\Scripts\OsuMapProcessor.cs" />
+    <Compile Include="Assets\Scripts\OsuMapProvider.cs" />
+    <Compile Include="Assets\Scripts\CircleHandler.cs" />
+    <Compile Include="Assets\Scripts\Models\HitObject.cs" />
     <Compile Include="Assets\Scripts\SkyboxHandler.cs" />
+    <Compile Include="Assets\Scripts\Models\OsuMapVersion.cs" />
     <None Include="Library\PackageCache\com.unity.collab-proxy@2.2.0\Lib\Editor\PlasticSCM\Localization\commontypes.ko.txt" />
     <None Include="Library\PackageCache\com.unity.settings-manager@1.0.3\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />

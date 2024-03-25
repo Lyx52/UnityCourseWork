@@ -644,8 +644,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Graphs\Vector4MaterialSlot.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Drawing\Interfaces\IRectInterface.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Nodes\Math\Advanced\NegateNode.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Graphs\MaterialSlot.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Drawing\Controls\VectorControl.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Graphs\MaterialSlot.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Nodes\Input\Basic\ConstantNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Data\Nodes\Input\CustomInterpolatorNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.13\Editor\Generation\TargetResources\Structs.cs" />
