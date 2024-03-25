@@ -4,6 +4,8 @@
 ## Get latest from `dotnet new gitignore`
 [Ll]ibrary/
 [Ll]ibrary
+[Tt]emp/
+[Tt]emp
 
 # dotenv files
 .env
