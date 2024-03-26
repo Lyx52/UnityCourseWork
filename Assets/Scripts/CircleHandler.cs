@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CircleHandler : MonoBehaviour
@@ -16,11 +19,17 @@ public class CircleHandler : MonoBehaviour
     private const float minScale = 0.08f;
     private const float defaultScale = 0.15f;
     private const long circleTicks = 32;
+    private const long triggerEndpoint = 30;
+    private const long triggerStartpoint = 15;
 
     public long circleEndedTimeMs = 0;
     public long circleFiredTimeMs = 0;
-    public Action OnCircleTriggered { get; set; }
-
+    public Action<bool> OnCircleTriggered { get; set; }
+    public ActionBasedController leftController;
+    private bool colorChanged = false;
+    private bool canTrigger = false;
+    private bool isHovering = false;
+    private Coroutine _updateCoroutine;
     public void Initialize(long firedAt, long endedAt)
     {
         _innerCircle = transform.Find("Inner");
@@ -33,7 +42,7 @@ public class CircleHandler : MonoBehaviour
         circleEndedTimeMs = endedAt;
 
         gameObject.SetActive(true);
-        StartCoroutine(UpdateCircle());
+        _updateCoroutine = StartCoroutine(UpdateCircle());
     }
 
     private IEnumerator UpdateCircle()
@@ -45,13 +54,42 @@ public class CircleHandler : MonoBehaviour
         while (currentTick <= circleTicks)
         {
             if (!gameObject.activeSelf) yield return null;
+
+            if (currentTick is >= triggerStartpoint and <= triggerEndpoint)
+            {
+                canTrigger = true;
+                if (!colorChanged)
+                {
+                    ChangeColor(_outerShell, Color.green);
+                    colorChanged = true;
+                }
+            }
+            else
+            {
+                canTrigger = false;
+                if (colorChanged)
+                {
+                    ChangeColor(_outerShell, Color.red);
+                    colorChanged = false;
+                }
+            }
+            
             _outerCircle.localScale = new Vector3(currentScale, 0.1f, currentScale);
             currentScale -= scaleSpeed;
-            yield return new WaitForSecondsRealtime(waitTimeSec);
+            yield return new WaitForSeconds(waitTimeSec);
             currentTick++;
         }
+        OnCircleTriggered?.Invoke(false);
+    }
 
-        OnCircleTriggered?.Invoke();
+    private void Update()
+    {
+        if (!isHovering) return;
+        if (((int)leftController.activateAction.action.ReadValue<float>()) == 1)
+        {
+            StopCoroutine(_updateCoroutine);
+            OnCircleTriggered?.Invoke(canTrigger);
+        }
     }
 
     private void ChangeColor(GameObject obj, Color color)
@@ -59,19 +97,12 @@ public class CircleHandler : MonoBehaviour
         Material material = obj.GetComponent<Renderer>().material;
         material.SetColor(ColorId, color);
     }
-
-    public void OnInteracted(HoverEnterEventArgs args)
+    public void OnHoverEnter(HoverEnterEventArgs args)
     {
-        var pos = gameObject.transform.position;
-        Debug.Log($"TRIGGERED ON ({pos.x}, {pos.y}, {pos.z})");
-        OnCircleTriggered?.Invoke();
+        isHovering = true;
     }
-
-    public void OnActivated(ActivateEventArgs args)
+    public void OnHoverExit(HoverExitEventArgs args)
     {
-        // var pos = gameObject.transform.position;
-        // Debug.Log($"ACTIVATED ON ({pos.x}, {pos.y}, {pos.z})");
-        // OnCircleTriggered?.Invoke();    
+        isHovering = false;
     }
-
 }

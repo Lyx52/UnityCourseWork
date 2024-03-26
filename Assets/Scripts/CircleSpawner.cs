@@ -1,15 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using DefaultNamespace;
 using DefaultNamespace.Models;
 using JetBrains.Annotations;
-using UnityEngine.Networking;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CircleSpawner : MonoBehaviour
@@ -23,16 +18,22 @@ public class CircleSpawner : MonoBehaviour
     private long _playbackStartTime = 0;
     private OsuMap _selectedMap;
     private OsuMapVersion _selectedMapVersion;
-    
+    public ActionBasedController controller;
     [CanBeNull] private AudioClip _currentAudioClip = null;
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
     private long playbackTime => DateTimeOffset.Now.ToUnixTimeMilliseconds() - _playbackStartTime;
     void Start()
-    {   
+    {    
         var maps = OsuMapProvider.GetAvailableMaps();
         _circles = new List<GameObject>();
         _selectedMap = maps.FirstOrDefault()!;
         _selectedMapVersion = _selectedMap.Versions.Values.FirstOrDefault()!;
+        // for (int i = 0; i < _selectedMapVersion.HitObjects.Count; i++)
+        // {
+        //     _selectedMapVersion.HitObjects[i].endedAt = (uint)(i * 500) + 250;
+        //     _selectedMapVersion.HitObjects[i].X = 0;
+        //     _selectedMapVersion.HitObjects[i].Y = 0;
+        // }
         StartCoroutine(_selectedMapVersion.LoadClip());
         if (_selectedMapVersion.TryLoadBackground(out var background))
         {
@@ -68,18 +69,19 @@ public class CircleSpawner : MonoBehaviour
             SpawnCircle(new Vector3(x, y, 0), playbackTime, obj.endedAt);
         }
     }
-
     public void SpawnCircle(Vector3 position, long firedAt, long endedAt)
     {
         var circle = Instantiate(circlePrefab, position, Quaternion.identity);
         var handler = circle.GetComponent<CircleHandler>();
         var interactable = circle.GetComponent<XRSimpleInteractable>();
         interactable.interactionManager = interactionManager;
+        handler.leftController = controller;
         handler.Initialize(firedAt, endedAt);
-        handler.OnCircleTriggered += () =>
+        handler.OnCircleTriggered += (triggeredOnTime) =>
         {
             DestroyImmediate(circle);
             _circles.Remove(circle);
+            Debug.Log($"Circle triggered! {triggeredOnTime}");
         };
         _circles.Add(circle);
     }
