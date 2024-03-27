@@ -41,9 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Samples\XR Interaction Toolkit\2.5.3\XR Device Simulator\Scripts\XRDeviceSimulatorControllerUI.cs" />
     <Compile Include="Assets\Samples\XR Interaction Toolkit\2.5.3\XR Device Simulator\Scripts\XRDeviceSimulatorUI.cs" />
     <Compile Include="Assets\Samples\XR Interaction Toolkit\2.5.3\XR Device Simulator\Scripts\XRDeviceSimulatorHandsUI.cs" />
-    <Compile Include="Assets\Samples\XR Interaction Toolkit\2.5.3\XR Device Simulator\Scripts\XRDeviceSimulatorControllerUI.cs" />
     <None Include="Assets\Samples\XR Interaction Toolkit\2.5.3\XR Device Simulator\Unity.XR.Interaction.Toolkit.Samples.DeviceSimulator.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

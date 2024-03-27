@@ -42,8 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\SampleSettings.cs" />
-    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\SampleLoader.cs" />
     <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\SampleConstants.cs" />
+    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\SampleLoader.cs" />
     <None Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Unity.XR.Management.Samples.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

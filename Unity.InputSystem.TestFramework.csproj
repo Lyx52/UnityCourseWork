@@ -41,9 +41,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\InputTestFixture.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\AssemblyInfo.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\InputTestRuntime.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\InputTestFixture.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\WinUserInput.cs" />
     <None Include="Library\PackageCache\com.unity.inputsystem@1.7.0\Tests\TestFixture\Unity.InputSystem.TestFramework.asmdef" />
     <Reference Include="UnityEngine">

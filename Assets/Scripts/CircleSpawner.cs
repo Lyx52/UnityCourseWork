@@ -24,7 +24,6 @@ public class CircleSpawner : MonoBehaviour
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
     private long playbackTime => DateTimeOffset.Now.ToUnixTimeMilliseconds() - _playbackStartTime;
     private long timeSinceClicked = 0;
-    public static bool hasClicked = false;
     void Start()
     {    
         var maps = OsuMapProvider.GetAvailableMaps();
@@ -67,8 +66,8 @@ public class CircleSpawner : MonoBehaviour
         if (_currentHitObjectQueue.TryPeek(out var obj) && obj.endedAt <= (playbackTime + spawnDelay))
         {
             obj = _currentHitObjectQueue.Dequeue();
-            var x = obj.X * 6f;
-            var y = obj.Y * 4f; 
+            var x = obj.X * 12f;
+            var y = obj.Y * 8f; 
             SpawnCircle(new Vector3(x, y, 0), playbackTime, obj.endedAt);
         }
     }
@@ -83,6 +82,7 @@ public class CircleSpawner : MonoBehaviour
         handler.Initialize(firedAt, endedAt);
         handler.OnCircleTriggered += (triggeredOnTime) =>
         {
+            if (triggeredOnTime) Debug.Log("Clicked!");
             timeSinceClicked = playbackTime;
             handler.StopUpdate();
             DestroyImmediate(circle);

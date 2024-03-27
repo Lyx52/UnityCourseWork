@@ -41,8 +41,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\CameraOffset.cs" />
     <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\ArmModels\ArmModel.cs" />
+    <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\CameraOffset.cs" />
     <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\ArmModels\TransitionArmModel.cs" />
     <Compile Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\ArmModels\SwingArmModel.cs" />
     <None Include="Library\PackageCache\com.unity.xr.legacyinputhelpers@2.1.10\Runtime\LegacyInputHelpers.asmdef" />

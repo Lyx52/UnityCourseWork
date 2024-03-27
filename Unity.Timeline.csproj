@@ -52,8 +52,8 @@
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Utilities\IPropertyCollector.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Attributes\TimelineHelpURLAttribute.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Audio\AudioTrack.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\TimelineAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Playables\DirectorControlPlayable.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\TimelineAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Utilities\AnimationPreviewUtilities.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Events\INotificationOptionProvider.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Runtime\Utilities\TimelineCreateUtilities.cs" />

@@ -41,10 +41,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleStandaloneLoaderUI.cs" />
     <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleMetadata.cs" />
-    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleSettingsEditor.cs" />
+    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleStandaloneLoaderUI.cs" />
     <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleBuildProcessor.cs" />
+    <Compile Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\SampleSettingsEditor.cs" />
     <None Include="Assets\Samples\XR Plugin Management\4.4.1\Example XR Management implementation\Editor\Unity.XR.Management.Samples.Editor.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

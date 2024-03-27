@@ -61,8 +61,8 @@
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\VisualStudioForWindowsInstallation.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\ProjectGeneration\ProjectProperties.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\ProjectGeneration\FileIOProvider.cs" />
-    <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Testing\TestRunnerCallbacks.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Testing\TestAdaptor.cs" />
+    <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Testing\TestRunnerCallbacks.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\UnityInstallation.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Messaging\Deserializer.cs" />
     <Compile Include="Library\PackageCache\com.unity.ide.visualstudio@2.0.22\Editor\Testing\TestResultAdaptor.cs" />
