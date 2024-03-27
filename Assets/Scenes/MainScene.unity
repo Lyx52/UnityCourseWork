@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.21691962, g: 0.21691962, b: 0.21691962, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1988,13 +1988,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2146464817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e049123f1f76dd4da1ef714d5c25d7c, type: 3}
+  m_Script: {fileID: 11500000, guid: c9fb8ef66e887484bb82d667445e5ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circlePrefab: {fileID: 91946858548683902, guid: d4f72b38205a9644290f71d597d962ee, type: 3}
+  circlePrefab: {fileID: 91946858548683902, guid: e8cb4e285128e1b47898475d37770f4e, type: 3}
   interactionManager: {fileID: 2119087920}
   audioSource: {fileID: 410194338}
   spawnDelay: 1000
-  zSpeed: 0.05
+  zSpeed: 0.008
   rightController: {fileID: 429881025}
   leftController: {fileID: 993336174}
