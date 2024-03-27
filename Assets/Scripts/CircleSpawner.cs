@@ -29,7 +29,7 @@ public class CircleSpawner : MonoBehaviour
     {    
         var maps = OsuMapProvider.GetAvailableMaps();
         _circles = new List<GameObject>();
-        _selectedMap = maps.FirstOrDefault(m => m.Title == "1674622 Bossfight - Endgame")!;
+        _selectedMap = maps.FirstOrDefault()!;
         _selectedMapVersion = _selectedMap.Versions.Values.FirstOrDefault()!;
         // for (int i = 0; i < _selectedMapVersion.HitObjects.Count; i++)
         // {
