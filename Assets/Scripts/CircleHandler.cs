@@ -18,17 +18,19 @@ public class CircleHandler : MonoBehaviour
 
     private const float minScale = 0.08f;
     private const float defaultScale = 0.15f;
-    private const long circleTicks = 32;
-    private const long triggerEndpoint = 30;
-    private const long triggerStartpoint = 15;
+    private const long circleTicks = 64;
+    private const long triggerEndpoint = 62;
+    private const long triggerStartpoint = 30;
 
     public long circleEndedTimeMs = 0;
     public long circleFiredTimeMs = 0;
     public Action<bool> OnCircleTriggered { get; set; }
+    public ActionBasedController rightController;
     public ActionBasedController leftController;
     private bool colorChanged = false;
     private bool canTrigger = false;
-    private bool isHovering = false;
+    private bool isHoveringRight = false;
+    private bool isHoveringLeft = false;
     private Coroutine _updateCoroutine;
     public void Initialize(long firedAt, long endedAt)
     {
@@ -84,14 +86,17 @@ public class CircleHandler : MonoBehaviour
 
     private void Update()
     {
-        if (!isHovering) return;
-        if (((int)leftController.activateAction.action.ReadValue<float>()) == 1)
-        {
-            StopCoroutine(_updateCoroutine);
+        if (isHoveringLeft && ((int)leftController.activateActionValue.action.ReadValue<float>()) == 1) {
             OnCircleTriggered?.Invoke(canTrigger);
+            return;
+        }
+        if (isHoveringRight && ((int)rightController.activateActionValue.action.ReadValue<float>()) == 1) {
+
+            OnCircleTriggered?.Invoke(canTrigger);
+            return;
         }
     }
-
+    public void StopUpdate() => StopCoroutine(_updateCoroutine);
     private void ChangeColor(GameObject obj, Color color)
     {
         Material material = obj.GetComponent<Renderer>().material;
@@ -99,10 +104,12 @@ public class CircleHandler : MonoBehaviour
     }
     public void OnHoverEnter(HoverEnterEventArgs args)
     {
-        isHovering = true;
+        if (args.interactorObject.ToString().Contains("Right Controller")) isHoveringRight = true;
+        if (args.interactorObject.ToString().Contains("Left Controller")) isHoveringLeft = true;
     }
     public void OnHoverExit(HoverExitEventArgs args)
     {
-        isHovering = false;
+        if (args.interactorObject.ToString().Contains("Right Controller")) isHoveringRight = false;
+        if (args.interactorObject.ToString().Contains("Left Controller")) isHoveringLeft = false;
     }
 }

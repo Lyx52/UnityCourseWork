@@ -18,15 +18,18 @@ public class CircleSpawner : MonoBehaviour
     private long _playbackStartTime = 0;
     private OsuMap _selectedMap;
     private OsuMapVersion _selectedMapVersion;
-    public ActionBasedController controller;
+    public ActionBasedController rightController;
+    public ActionBasedController leftController;
     [CanBeNull] private AudioClip _currentAudioClip = null;
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
     private long playbackTime => DateTimeOffset.Now.ToUnixTimeMilliseconds() - _playbackStartTime;
+    private long timeSinceClicked = 0;
+    public static bool hasClicked = false;
     void Start()
     {    
         var maps = OsuMapProvider.GetAvailableMaps();
         _circles = new List<GameObject>();
-        _selectedMap = maps.FirstOrDefault()!;
+        _selectedMap = maps.FirstOrDefault(m => m.Title == "1674622 Bossfight - Endgame")!;
         _selectedMapVersion = _selectedMap.Versions.Values.FirstOrDefault()!;
         // for (int i = 0; i < _selectedMapVersion.HitObjects.Count; i++)
         // {
@@ -75,13 +78,16 @@ public class CircleSpawner : MonoBehaviour
         var handler = circle.GetComponent<CircleHandler>();
         var interactable = circle.GetComponent<XRSimpleInteractable>();
         interactable.interactionManager = interactionManager;
-        handler.leftController = controller;
+        handler.leftController = leftController;
+        handler.rightController = rightController;
         handler.Initialize(firedAt, endedAt);
         handler.OnCircleTriggered += (triggeredOnTime) =>
         {
+            timeSinceClicked = playbackTime;
+            handler.StopUpdate();
             DestroyImmediate(circle);
             _circles.Remove(circle);
-            Debug.Log($"Circle triggered! {triggeredOnTime}");
+            //Debug.Log($"Circle triggered! {triggeredOnTime}");
         };
         _circles.Add(circle);
     }
