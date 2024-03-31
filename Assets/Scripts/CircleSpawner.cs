@@ -12,9 +12,10 @@ public class CircleSpawner : MonoBehaviour
     public GameObject circlePrefab;
     public XRInteractionManager interactionManager;
     public AudioSource audioSource;
-    private List<GameObject> _circles;
+    private Dictionary<GameObject, CircleHandler> _circles;
     public long spawnDelay = 1000;
     public float zSpeed = 0.008f;
+    public ComboCounter comboCounter;
     private long _playbackStartTime = 0;
     private OsuMap _selectedMap;
     private OsuMapVersion _selectedMapVersion;
@@ -23,11 +24,10 @@ public class CircleSpawner : MonoBehaviour
     [CanBeNull] private AudioClip _currentAudioClip = null;
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
     private long playbackTime => DateTimeOffset.Now.ToUnixTimeMilliseconds() - _playbackStartTime;
-    private long timeSinceClicked = 0;
     void Start()
     {    
         var maps = OsuMapProvider.GetAvailableMaps();
-        _circles = new List<GameObject>();
+        _circles = new Dictionary<GameObject, CircleHandler>();
         _selectedMap = maps.FirstOrDefault()!;
         _selectedMapVersion = _selectedMap.Versions.Values.FirstOrDefault()!;
         // for (int i = 0; i < _selectedMapVersion.HitObjects.Count; i++)
@@ -58,16 +58,15 @@ public class CircleSpawner : MonoBehaviour
             _currentHitObjectQueue = _selectedMapVersion.GetHitObjectQueue();
             _playbackStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
-        foreach (var circle in _circles)
+        foreach (var kvp in _circles)
         {
-            var original = circle.transform.position;
-            circle.transform.position = new Vector3(original.x, original.y, original.z - zSpeed);
+            kvp.Value.UpdatePosition(zSpeed, audioSource.transform.position);
         }
         if (_currentHitObjectQueue.TryPeek(out var obj) && obj.endedAt <= (playbackTime + spawnDelay))
         {
             obj = _currentHitObjectQueue.Dequeue();
-            var x = obj.X * 12f;
-            var y = obj.Y * 8f; 
+            var x = obj.X * 28f;
+            var y = obj.Y * 21f; 
             SpawnCircle(new Vector3(x, y, 0), playbackTime, obj.endedAt);
         }
     }
@@ -77,18 +76,14 @@ public class CircleSpawner : MonoBehaviour
         var handler = circle.GetComponent<CircleHandler>();
         var interactable = circle.GetComponent<XRSimpleInteractable>();
         interactable.interactionManager = interactionManager;
-        handler.leftController = leftController;
-        handler.rightController = rightController;
         handler.Initialize(firedAt, endedAt);
-        handler.OnCircleTriggered += (triggeredOnTime) =>
+        handler.OnCircleTriggered += (hitResult) =>
         {
-            if (triggeredOnTime) Debug.Log("Clicked!");
-            timeSinceClicked = playbackTime;
+            comboCounter.UpdateDisplay(hitResult);
             handler.StopUpdate();
             DestroyImmediate(circle);
             _circles.Remove(circle);
-            //Debug.Log($"Circle triggered! {triggeredOnTime}");
         };
-        _circles.Add(circle);
+        _circles.Add(circle, handler);
     }
 }

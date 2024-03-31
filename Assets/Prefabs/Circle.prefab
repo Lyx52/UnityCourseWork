@@ -98,19 +98,7 @@ MonoBehaviour:
   m_AllowGazeAssistance: 0
   m_FirstHoverEntered:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 91946858548683903}
-        m_TargetAssemblyTypeName: CircleHandler, Assembly-CSharp
-        m_MethodName: OnHoverEnter
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_LastHoverExited:
     m_PersistentCalls:
       m_Calls: []
@@ -119,19 +107,7 @@ MonoBehaviour:
       m_Calls: []
   m_HoverExited:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 91946858548683903}
-        m_TargetAssemblyTypeName: CircleHandler, Assembly-CSharp
-        m_MethodName: OnHoverExit
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_FirstSelectEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -192,68 +168,6 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &6101793275748842869
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 245131383575a8c4c807987cc92c8ce1, type: 3}
-  m_PrefabInstance: {fileID: 91946858756419566}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 489784408964777989}
-  m_Layer: 0
-  m_Name: 'Inner (Missing Prefab with guid: 245131383575a8c4c807987cc92c8ce1)'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &489784408964777989
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 245131383575a8c4c807987cc92c8ce1, type: 3}
-  m_PrefabInstance: {fileID: 91946858756419566}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6101793275748842869}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 91946858548683900}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8048051803902035756
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6f632d9f1f3453d4f868997f7eac3524, type: 3}
-  m_PrefabInstance: {fileID: 91946858300064342}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 489784409445967293}
-  m_Layer: 0
-  m_Name: 'Outer (Missing Prefab with guid: 6f632d9f1f3453d4f868997f7eac3524)'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &489784409445967293
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6f632d9f1f3453d4f868997f7eac3524, type: 3}
-  m_PrefabInstance: {fileID: 91946858300064342}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8048051803902035756}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 91946858548683900}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &91946858300064342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -331,6 +245,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f632d9f1f3453d4f868997f7eac3524, type: 3}
+--- !u!4 &489784409445967293 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6f632d9f1f3453d4f868997f7eac3524, type: 3}
+  m_PrefabInstance: {fileID: 91946858300064342}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &91946858756419566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -408,3 +327,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 245131383575a8c4c807987cc92c8ce1, type: 3}
+--- !u!4 &489784408964777989 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 245131383575a8c4c807987cc92c8ce1, type: 3}
+  m_PrefabInstance: {fileID: 91946858756419566}
+  m_PrefabAsset: {fileID: 0}

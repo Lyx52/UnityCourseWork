@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DefaultNamespace.Models;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -14,21 +15,17 @@ public class CircleHandler : MonoBehaviour
     private const float minScale = 0.08f;
     private const float defaultScale = 0.15f;
     private const long circleTicks = 64;
-    private const long triggerEndpoint = 62;
-    private const long triggerStartpoint = 30;
-
+    private const long triggerHalfPointStart = 30;
+    private const long triggerFullPointStart = 40;
+    private long currentTick = 0;
     public long circleEndedTimeMs = 0;
     public long circleFiredTimeMs = 0;
-    public Action<bool> OnCircleTriggered { get; set; }
-    public ActionBasedController rightController;
-    public ActionBasedController leftController;
-    private bool colorChanged = false;
-    private bool canTrigger = false;
-    private bool isHoveringRight = false;
-    private bool isHoveringLeft = false;
+    public Action<HitPointResult> OnCircleTriggered { get; set; }
+    private HitPointResult _currentResult;
     private Coroutine _updateCoroutine;
     public void Initialize(long firedAt, long endedAt)
     {
+        _currentResult = HitPointResult.NoPoints;
         _innerCircle = transform.Find("Inner");
         _outerCircle = transform.Find("Outer");
         _outerShell = _outerCircle.Find("OuterObj").gameObject;
@@ -42,32 +39,45 @@ public class CircleHandler : MonoBehaviour
         _updateCoroutine = StartCoroutine(UpdateCircle());
     }
 
+    private float GetSpeedFactor()
+    {
+        float progress = (float)currentTick / circleTicks;
+        return (float)(1f + 1 / (1 + Math.Exp(-10 * (progress - 1))));
+    }
     private IEnumerator UpdateCircle()
     {
-        long currentTick = 0;
+        currentTick = 0;
         float waitTimeSec = ((circleEndedTimeMs - circleFiredTimeMs) / (float)circleTicks) / 1000.0f;
         float scaleSpeed = (defaultScale - minScale) / circleTicks;
         float currentScale = defaultScale;
+        
         while (currentTick <= circleTicks)
         {
             if (!gameObject.activeSelf) yield return null;
 
-            if (currentTick is >= triggerStartpoint and <= triggerEndpoint)
+            if (currentTick is >= triggerHalfPointStart and < triggerFullPointStart)
             {
-                canTrigger = true;
-                if (!colorChanged)
+                
+                if (_currentResult != HitPointResult.HalfPoints)
                 {
+                    _currentResult = HitPointResult.HalfPoints;
+                    ChangeColor(_outerShell, Color.yellow);
+                }
+            } else if (currentTick >= triggerFullPointStart)
+            {
+                ;
+                if (_currentResult != HitPointResult.MaxPoints)
+                {
+                    _currentResult = HitPointResult.MaxPoints;
                     ChangeColor(_outerShell, Color.green);
-                    colorChanged = true;
                 }
             }
             else
             {
-                canTrigger = false;
-                if (colorChanged)
+                if (_currentResult != HitPointResult.NoPoints)
                 {
+                    _currentResult = HitPointResult.NoPoints;
                     ChangeColor(_outerShell, Color.red);
-                    colorChanged = false;
                 }
             }
             
@@ -76,35 +86,24 @@ public class CircleHandler : MonoBehaviour
             yield return new WaitForSeconds(waitTimeSec);
             currentTick++;
         }
-        OnCircleTriggered?.Invoke(false);
+        OnCircleTriggered?.Invoke(HitPointResult.NoPoints);
     }
-
-    private void Update()
+    public void OnControllerHit(ControllerHand controllerHand)
     {
-        if (isHoveringLeft && ((int)leftController.activateActionValue.action.ReadValue<float>()) == 1) {
-            OnCircleTriggered?.Invoke(canTrigger);
-            return;
-        }
-        if (isHoveringRight && ((int)rightController.activateActionValue.action.ReadValue<float>()) == 1) {
-
-            OnCircleTriggered?.Invoke(canTrigger);
-            return;
-        }
+        OnCircleTriggered?.Invoke(_currentResult);    
+    }
+    public void UpdatePosition(float zSpeed, Vector3 playerPosition)
+    {
+        var position = transform.position;
+        Vector3 direction = (playerPosition - position).normalized;
+        transform.rotation = Quaternion.LookRotation(direction);
+        position += direction * (zSpeed * GetSpeedFactor());
+        transform.position = position;
     }
     public void StopUpdate() => StopCoroutine(_updateCoroutine);
     private void ChangeColor(GameObject obj, Color color)
     {
         Material material = obj.GetComponent<Renderer>().material;
         material.SetColor(ColorId, color);
-    }
-    public void OnHoverEnter(HoverEnterEventArgs args)
-    {
-        if (args.interactorObject.ToString().Contains("Right Controller")) isHoveringRight = true;
-        if (args.interactorObject.ToString().Contains("Left Controller")) isHoveringLeft = true;
-    }
-    public void OnHoverExit(HoverExitEventArgs args)
-    {
-        if (args.interactorObject.ToString().Contains("Right Controller")) isHoveringRight = false;
-        if (args.interactorObject.ToString().Contains("Left Controller")) isHoveringLeft = false;
     }
 }

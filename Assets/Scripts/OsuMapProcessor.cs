@@ -16,6 +16,10 @@ namespace DefaultNamespace
     {
         public static readonly Vector2 OsuScreenSize = new Vector2(640f, 480f);
 
+        private static uint[] _allowedTypes =
+        {
+            1, 2
+        };
         private static ConcurrentDictionary<string, AudioClip> _loadedClips =
             new ConcurrentDictionary<string, AudioClip>();
         
@@ -50,10 +54,30 @@ namespace DefaultNamespace
                     }
                 }
             }
-
-            return map;
+            
+            return map.PostProcessHitObjects();
         }
 
+        public static OsuMapVersion PostProcessHitObjects(this OsuMapVersion map)
+        {
+            if (map.HitObjects.Count <= 0) return map;
+            var hitObjects = new List<HitObject> { map.HitObjects.First() };
+            const float minDist = 0.01f;
+            const long minTimeDiff = 25;
+            for (int i = 0; i < map.HitObjects.Count - 1; i++)
+            {
+                var first = map.HitObjects[i];
+                var second = map.HitObjects[i + 1];
+
+                var diffX = Math.Abs(first.X - second.X);
+                var diffY = Math.Abs(first.Y - second.Y);
+                var diffTime = Math.Abs(first.endedAt - second.endedAt);
+                if (diffX > minDist && diffY > minDist && diffTime > minTimeDiff) hitObjects.Add(second);
+            }
+
+            map.HitObjects = hitObjects;
+            return map;
+        }
         private static void ProcessGeneralInfo(StreamReader sr, OsuMapVersion map)
         {
             var line = sr.ReadLine();
@@ -143,7 +167,7 @@ namespace DefaultNamespace
             while (!sr.EndOfStream && line?.Length > 2)
             {
                 var obj = ParseHitObject(line);
-                if (obj is not null)
+                if (obj is not null && _allowedTypes.Contains(obj.Type))
                 {
                     map.HitObjects.Add(obj);    
                 }
@@ -160,12 +184,14 @@ namespace DefaultNamespace
             if (!float.TryParse(parts[0], out var x)) return null;
             if (!float.TryParse(parts[1], out var y)) return null;
             if (!uint.TryParse(parts[2], out var playbackOffset)) return null;
+            if (!uint.TryParse(parts[3], out var objType)) return null;
             return new HitObject()
             {
                 // From corner relative to center relative
                 X = (float)(x - Math.Floor(OsuScreenSize.x / 2f)) / OsuScreenSize.x,
                 Y = (float)(y - Math.Floor(OsuScreenSize.y / 2f)) / OsuScreenSize.y,
-                endedAt = playbackOffset
+                endedAt = playbackOffset,
+                Type = objType
             };
         }
         
