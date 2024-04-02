@@ -86,4 +86,10 @@ public class CircleSpawner : MonoBehaviour
         };
         _circles.Add(circle, handler);
     }
+
+    public IEnumerable<CircleHandler> GetNearbyCircles(CircleHandler handler, float distance)
+    {
+        return _circles.Values.Where(ch =>
+            Vector2.Distance(ch.transform.position, handler.transform.position) <= distance);
+    }
 }

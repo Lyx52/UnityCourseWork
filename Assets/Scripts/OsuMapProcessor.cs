@@ -63,7 +63,7 @@ namespace DefaultNamespace
             if (map.HitObjects.Count <= 0) return map;
             var hitObjects = new List<HitObject> { map.HitObjects.First() };
             const float minDist = 0.01f;
-            const long minTimeDiff = 25;
+            const long minTimeDiff = 40;
             for (int i = 0; i < map.HitObjects.Count - 1; i++)
             {
                 var first = map.HitObjects[i];

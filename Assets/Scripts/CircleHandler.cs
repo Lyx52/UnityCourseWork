@@ -23,6 +23,7 @@ public class CircleHandler : MonoBehaviour
     public Action<HitPointResult> OnCircleTriggered { get; set; }
     private HitPointResult _currentResult;
     private Coroutine _updateCoroutine;
+    public bool IsHittable => _currentResult != HitPointResult.NoPoints;
     public void Initialize(long firedAt, long endedAt)
     {
         _currentResult = HitPointResult.NoPoints;
@@ -90,7 +91,7 @@ public class CircleHandler : MonoBehaviour
     }
     public void OnControllerHit(ControllerHand controllerHand)
     {
-        OnCircleTriggered?.Invoke(_currentResult);    
+        OnCircleTriggered?.Invoke(_currentResult);
     }
     public void UpdatePosition(float zSpeed, Vector3 playerPosition)
     {
