@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.2167969, g: 0.2167969, b: 0.2167969, a: 1}
+  m_IndirectSpecularColor: {r: 0.21691962, g: 0.21691962, b: 0.21691962, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -159,7 +159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -430, y: -249.4}
+  m_AnchoredPosition: {x: -330, y: -220}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &370528446
@@ -1230,8 +1230,7 @@ MonoBehaviour:
   hand: 1
   maxRayDistance: 25
   triggerDelayMs: 3
-  maxDistanceDiff: 2
-  minPointDistanceDiff: 0.75
+  maxNearbyDistance: 1
   circleSpawner: {fileID: 0}
 --- !u!1 &489150534
 GameObject:
@@ -1245,7 +1244,7 @@ GameObject:
   - component: {fileID: 489150536}
   - component: {fileID: 489150535}
   m_Layer: 0
-  m_Name: XR Origin
+  m_Name: XR Setup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1294,10 +1293,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2119087921}
   - {fileID: 585668208}
-  - {fileID: 1868250346}
+  - {fileID: 1480013344}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &585668207
 GameObject:
@@ -1331,7 +1331,7 @@ Transform:
   - {fileID: 993336169}
   - {fileID: 429881020}
   m_Father: {fileID: 489150537}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680549037
 GameObject:
@@ -1346,7 +1346,7 @@ GameObject:
   - component: {fileID: 680549039}
   - component: {fileID: 680549038}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1428,7 +1428,7 @@ RectTransform:
   m_Children:
   - {fileID: 370528445}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2195,8 +2195,7 @@ MonoBehaviour:
   hand: 0
   maxRayDistance: 20
   triggerDelayMs: 5
-  maxDistanceDiff: 1.25
-  minPointDistanceDiff: 0.75
+  maxNearbyDistance: 1
   circleSpawner: {fileID: 2146464819}
 --- !u!1 &1115975313
 GameObject:
@@ -2264,7 +2263,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1480013343
 PrefabInstance:
@@ -2275,7 +2274,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2321,9 +2320,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Device Simulator
       objectReference: {fileID: 0}
+    - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
---- !u!4 &1868250346 stripped
+--- !u!4 &1480013344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
   m_PrefabInstance: {fileID: 1480013343}
@@ -2366,13 +2369,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2119087919}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.256275, y: -0.5404272, z: -10.770824}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -15.256275, y: -0.5404272, z: 5.2291756}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 489150537}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2146464817
 GameObject:
@@ -2424,5 +2427,3 @@ MonoBehaviour:
   spawnDelay: 1250
   zSpeed: 0.03
   comboCounter: {fileID: 370528448}
-  rightController: {fileID: 429881025}
-  leftController: {fileID: 993336174}

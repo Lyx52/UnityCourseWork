@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DefaultNamespace.Models;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -12,11 +13,30 @@ namespace DefaultNamespace
     {
         public static string OsuMapDirectory => Path.Join(Directory.GetCurrentDirectory(), "maps");
         private static Dictionary<string, OsuMap> _maps = new Dictionary<string, OsuMap>();
+        [CanBeNull] public static OsuMap ActiveMap { get; set; }
+        [CanBeNull] public static OsuMapVersion ActiveMapVersion  { get; set; }
 
-        public static List<OsuMap> GetAvailableMaps()
+        public static void SetActiveMap(string mapKey)
+        {
+            if (!_maps.ContainsKey(mapKey))
+                throw new UnityException($"Map with key {mapKey} does not exist");
+            ActiveMap = _maps[mapKey];
+            ActiveMapVersion = null;
+        } 
+
+        public static void SetActiveMapVersion(string mapVersionKey)
+        {
+            if (ActiveMap is null) 
+                throw new UnityException("Set ActiveMap before Map version");
+            
+            if (!ActiveMap.Versions.ContainsKey(mapVersionKey))
+                throw new UnityException($"Map {ActiveMap.Title} version with key {mapVersionKey} does not exist");
+            ActiveMapVersion = ActiveMap!.Versions[mapVersionKey]!;
+        }
+        public static Dictionary<string, OsuMap> GetAvailableMaps()
         {
             RefreshMapList();
-            return _maps.Values.ToList();
+            return _maps;
         }
         
         private static void RefreshMapList()

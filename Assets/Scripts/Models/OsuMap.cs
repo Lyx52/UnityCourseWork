@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace DefaultNamespace.Models
 {
@@ -7,5 +9,6 @@ namespace DefaultNamespace.Models
         public string Title { get; set; }
         public string Location { get; set; }
         public Dictionary<string, OsuMapVersion> Versions { get; set; } = new Dictionary<string, OsuMapVersion>();
+        [CanBeNull] public string BackgroundImage => Versions.Values.FirstOrDefault()?.BackgroundImage;
     }
 }

@@ -1,0 +1,1 @@
+https://github.com/ppy/osu/blob/7f3646f2d1f4ee6a2d3e6c17ac49fe611304951f/osu.Game/Rulesets/Objects/Legacy/ConvertHitObjectParser.cs#L27
