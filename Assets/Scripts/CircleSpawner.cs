@@ -54,8 +54,8 @@ public class CircleSpawner : MonoBehaviour
         if (_currentHitObjectQueue.TryPeek(out var obj) && obj.endedAt <= (playbackTime + spawnDelay))
         {
             obj = _currentHitObjectQueue.Dequeue();
-            var x = obj.X * 28f;
-            var y = obj.Y * 21f; 
+            var x = obj.X * 24f;
+            var y = obj.Y * 18f; 
             SpawnCircle(new Vector3(x, y, 0), playbackTime, obj.endedAt);
         }
     }

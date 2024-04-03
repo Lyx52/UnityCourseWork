@@ -1,9 +1,8 @@
 using System;
 using System.Threading;
 using DefaultNamespace.Models;
-using TMPro;
 using UnityEngine;
-
+using UnityEngine.UI;
 namespace DefaultNamespace
 {
     public class ComboCounter : MonoBehaviour
@@ -14,10 +13,10 @@ namespace DefaultNamespace
         public long CurrentPoints { get; set; }
         public long MaxCombo { get; set; }
 
-        private TextMeshProUGUI _textMesh;
+        private Text _text;
         private void Start()
         {
-            _textMesh = GetComponent<TextMeshProUGUI>();
+            _text = GetComponent<Text>();
         }
 
         public void UpdateDisplay(HitPointResult result)
@@ -46,6 +45,6 @@ namespace DefaultNamespace
             UpdateText($"x{CurrentCombo}\n{CurrentPoints}");
         }
 
-        private void UpdateText(string text) => _textMesh.text = text;
+        private void UpdateText(string text) => _text.text = text;
     }
 }
