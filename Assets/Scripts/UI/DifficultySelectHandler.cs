@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using DefaultNamespace.Models;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR.Management;
 
 public class DifficultySelectHandler : MonoBehaviour
 {
     private List<SelectButtonHandler> _buttons;
     public GameObject selectButtonPrefab;
     public RectTransform buttonContentBox;
+    public GameObject menuXRSetup;
     private Dictionary<string, OsuMapVersion> _mapVersions;
     public void ShowMenu(OsuMap map)
     {
@@ -58,6 +61,10 @@ public class DifficultySelectHandler : MonoBehaviour
         Debug.Log($"Osu map version: {version.Title}, selected: {isSelected}");
         OsuMapProvider.SetActiveMapVersion(mapVersionKey);
         Debug.Log($"SELECTED MAP: {OsuMapProvider.ActiveMap!.Title}, SELECTED VERSION: {OsuMapProvider.ActiveMapVersion!.FullTitle}");
-        SceneManager.LoadScene("Scenes/MainScene", LoadSceneMode.Single);
+        StartCoroutine(LoadMainSceneAsync());
+    }
+    private IEnumerator LoadMainSceneAsync()
+    {
+        yield return SceneManager.LoadSceneAsync("Scenes/MainScene", LoadSceneMode.Single);
     }
 }

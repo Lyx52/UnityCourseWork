@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using DefaultNamespace.Models;
-using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CircleHitHandler : MonoBehaviour
