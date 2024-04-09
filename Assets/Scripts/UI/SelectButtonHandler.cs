@@ -9,11 +9,12 @@ public class SelectButtonHandler : MonoBehaviour
     public Image borderComponent;
     public Toggle toggleComponent;
     public Action<string, bool> onSelected;
-    private string buttonKey;
-    public void Init(string title, string backgroundImage, string key)
+    private string buttonKey = string.Empty;
+    public void Init(string title, string key, Texture2D background)
     {
         titleComponent.text = title;
         buttonKey = key;
+        SetBackgroundImage(background);
     }
 
     public void OnButtonClick(bool active) => onSelected?.Invoke(buttonKey, active);
@@ -22,6 +23,11 @@ public class SelectButtonHandler : MonoBehaviour
     {
         toggleComponent.SetIsOnWithoutNotify(false);
         SetBorderActive(active);
+    }
+
+    public void SetBackgroundImage(Texture2D texture)
+    {
+        backgroundComponent.sprite = Sprite.Create(texture, backgroundComponent.sprite.rect, backgroundComponent.sprite.pivot);
     }
     public void SetBorderActive(bool active) => borderComponent.gameObject.SetActive(active);
 }

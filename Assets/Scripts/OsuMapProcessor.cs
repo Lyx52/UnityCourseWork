@@ -20,9 +20,6 @@ namespace DefaultNamespace
         {
             1, 2
         };
-        private static ConcurrentDictionary<string, AudioClip> _loadedClips =
-            new ConcurrentDictionary<string, AudioClip>();
-        
         public static OsuMapVersion ProcessMapVersion(string filePath)
         {
             var map = new OsuMapVersion();
@@ -193,40 +190,6 @@ namespace DefaultNamespace
                 endedAt = playbackOffset,
                 Type = objType
             };
-        }
-        
-        public static bool TryLoadBackground(this OsuMapVersion mapVersion, [CanBeNull] out Texture2D background)
-        {
-            background = new Texture2D(2, 2);
-            if (mapVersion.BackgroundImage is null) return false;
-            var imageData = File.ReadAllBytes(mapVersion.BackgroundImage);
-            background.LoadImage(imageData);
-            background.filterMode = FilterMode.Trilinear;
-            return true;
-        }
-        public static bool TryGetAudioClip(this OsuMapVersion mapVersion, [CanBeNull] out AudioClip audioClip)
-            => _loadedClips.TryGetValue(mapVersion.AudioFile, out audioClip);
-        public static IEnumerator LoadClip(this OsuMapVersion mapVersion)
-        {
-            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(mapVersion.AudioFile, AudioType.UNKNOWN))
-            {
-                uwr.SendWebRequest();
-                while (!uwr.isDone) yield return new WaitForSeconds(1);
-                try
-                {
-                    if (uwr.result == UnityWebRequest.Result.ConnectionError) Debug.Log($"{uwr.error}");
-                    else
-                    {
-                        var clip = DownloadHandlerAudioClip.GetContent(uwr);
-                        if (!_loadedClips.TryAdd(mapVersion.AudioFile, clip))
-                            throw new ApplicationException("Audio clip is already loaded!");
-                    }
-                }
-                catch (Exception err)
-                {
-                    Debug.Log($"{err.Message}, {err.StackTrace}");
-                }
-            }
         }
     }
 }

@@ -10,5 +10,6 @@ namespace DefaultNamespace.Models
         public string Location { get; set; }
         public Dictionary<string, OsuMapVersion> Versions { get; set; } = new Dictionary<string, OsuMapVersion>();
         [CanBeNull] public string BackgroundImage => Versions.Values.FirstOrDefault()?.BackgroundImage;
+        [CanBeNull] public string AudioFile => Versions.Values.FirstOrDefault()?.AudioFile;
     }
 }

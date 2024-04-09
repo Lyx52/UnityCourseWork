@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DefaultNamespace;
 using DefaultNamespace.Models;
 using UnityEngine;
@@ -13,22 +11,32 @@ public class SongSelectHandler : MonoBehaviour
     public RectTransform buttonContentBox;
     public DifficultySelectHandler difficultySelectHandler;
     public Dictionary<string, OsuMap> _songList;
+    private Dictionary<string, Texture2D> _cachedTextures;
     public int currentlySelectedIdx = -1;
     void Start()
     {
         _buttons = new List<SelectButtonHandler>();
         _songList = OsuMapProvider.GetAvailableMaps();
+        _cachedTextures = new Dictionary<string, Texture2D>();
         foreach (var song in _songList)
         {
-            AddMapButton(song.Value, song.Key);    
+            if (song.Value.TryLoadBackground(out var background))
+            {
+                AddMapButton(song.Value, song.Key, background);    
+                _cachedTextures.Add(song.Key, background);
+                continue;
+            }
+            
+            AddMapButton(song.Value, song.Key, Texture2D.blackTexture);    
+            _cachedTextures.Add(song.Key, Texture2D.blackTexture);
         }
     }
 
-    private void AddMapButton(OsuMap map, string key)
+    private void AddMapButton(OsuMap map, string key, Texture2D background)
     {
         var button = Instantiate(songSelectButtonPrefab, buttonContentBox);
         var buttonHandler = button.GetComponent<SelectButtonHandler>();
-        buttonHandler.Init(map.Title, map.BackgroundImage, key);
+        buttonHandler.Init(map.Title, key, background);
         buttonHandler.onSelected += (key, active) =>
         {
             DeselectAll();
@@ -46,7 +54,7 @@ public class SongSelectHandler : MonoBehaviour
         Debug.Log($"Map: {map.Title}, selected: {isSelected}");
         if (isSelected)
         {
-            difficultySelectHandler.ShowMenu(map);
+            difficultySelectHandler.ShowMenu(map, _cachedTextures[mapKey]);
             OsuMapProvider.SetActiveMap(mapKey);
         }
         else

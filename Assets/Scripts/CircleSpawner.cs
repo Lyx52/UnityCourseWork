@@ -5,6 +5,7 @@ using UnityEngine;
 using DefaultNamespace;
 using DefaultNamespace.Models;
 using JetBrains.Annotations;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CircleSpawner : MonoBehaviour
@@ -15,7 +16,7 @@ public class CircleSpawner : MonoBehaviour
     private Dictionary<GameObject, CircleHandler> _circles;
     public long spawnDelay = 1000;
     public float zSpeed = 0.008f;
-    public ComboCounter comboCounter;
+    public UnityEvent<HitPointResult> onHitResult;
     private long _playbackStartTime = 0;
     [CanBeNull] private AudioClip _currentAudioClip = null;
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
@@ -25,15 +26,11 @@ public class CircleSpawner : MonoBehaviour
         if (OsuMapProvider.ActiveMap is null || OsuMapProvider.ActiveMapVersion is null)
             throw new UnityException("Map not loaded!");
         _circles = new Dictionary<GameObject, CircleHandler>();
-        StartCoroutine(OsuMapProvider.ActiveMapVersion!.LoadClip());
-        if (OsuMapProvider.ActiveMapVersion!.TryLoadBackground(out var background))
-        {
-            SkyboxHandler.UpdateSkybox(background);
-        }
     }
 
     void Update()
     {
+        if (!gameObject.activeSelf) return;
         if (_currentAudioClip is null)
         {
             if (OsuMapProvider.ActiveMapVersion!.TryGetAudioClip(out var audioClip)) _currentAudioClip = audioClip;
@@ -68,7 +65,7 @@ public class CircleSpawner : MonoBehaviour
         handler.Initialize(firedAt, endedAt);
         handler.OnCircleTriggered += (hitResult) =>
         {
-            comboCounter.UpdateDisplay(hitResult);
+            onHitResult.Invoke(hitResult);
             handler.StopUpdate();
             DestroyImmediate(circle);
             _circles.Remove(circle);

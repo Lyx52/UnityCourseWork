@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using DefaultNamespace.Models;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -6,19 +8,16 @@ namespace DefaultNamespace
     public static class SkyboxHandler
     {
         private static Texture2D _defaultTexture = new Texture2D(1, 1);
-        public static void UpdateSkybox(Texture2D background)
+        public static void UpdateSkyboxTexture(Texture2D background)
         {
-            var color = GetMostCommonColor(background);
-            _defaultTexture.SetPixel(0, 0, color);
-            _defaultTexture.Apply();
             RenderSettings.skybox.SetTexture("_FrontTex", background);    
             RenderSettings.skybox.SetTexture("_BackTex", _defaultTexture);    
             RenderSettings.skybox.SetTexture("_LeftTex", _defaultTexture);   
             RenderSettings.skybox.SetTexture("_RightTex", _defaultTexture);  
             RenderSettings.skybox.SetTexture("_UpTex", _defaultTexture);  
-            RenderSettings.skybox.SetTexture("_DownTex", _defaultTexture);  
+            RenderSettings.skybox.SetTexture("_DownTex", _defaultTexture);
         }
-        private static Color GetMostCommonColor(Texture2D texture, int pixelSkip = 8)
+        public static IEnumerator UpdateBackgroundColor(Texture2D texture, int pixelSkip = 8)
         {
             var colorHistogram = new Dictionary<Color, int>();
 
@@ -33,6 +32,8 @@ namespace DefaultNamespace
                         colorHistogram[color]++;
                     }
                 }
+
+                yield return null;
             }
 
             int maxCount = 0;
@@ -43,9 +44,12 @@ namespace DefaultNamespace
                 if (entry.Value >= maxCount) continue;
                 maxCount = entry.Value;
                 mostCommonColor = entry.Key;
+                yield return null;
             }
 
-            return mostCommonColor;
+            _defaultTexture.SetPixel(0, 0, mostCommonColor);
+            _defaultTexture.Apply();
+            yield return null;
         }
     }
 }

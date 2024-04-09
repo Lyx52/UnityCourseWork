@@ -46,16 +46,20 @@
     <Compile Include="Assets\Scripts\OsuMapProcessor.cs" />
     <Compile Include="Assets\Scripts\Models\HitPointResult.cs" />
     <Compile Include="Assets\Scripts\CircleHandler.cs" />
+    <Compile Include="Assets\Scripts\UI\UIHandler.cs" />
     <Compile Include="Assets\Scripts\Models\HitObject.cs" />
+    <Compile Include="Assets\Scripts\UI\LoadingAnimator.cs" />
     <Compile Include="Assets\Scripts\CircleHitHandler.cs" />
     <Compile Include="Assets\Scripts\SkyboxHandler.cs" />
     <Compile Include="Assets\Scripts\CircleSpawner.cs" />
+    <Compile Include="Assets\Scripts\Models\GameState.cs" />
     <Compile Include="Assets\Scripts\OsuMapProvider.cs" />
     <Compile Include="Assets\Scripts\Models\ControllerHand.cs" />
     <Compile Include="Assets\Scripts\Models\OsuMapVersion.cs" />
     <Compile Include="Assets\Scripts\UI\SelectButtonHandler.cs" />
     <Compile Include="Assets\Scripts\UI\DifficultySelectHandler.cs" />
-    <Compile Include="Assets\Scripts\ComboCounter.cs" />
+    <Compile Include="Assets\Scripts\AssetLoader.cs" />
+    <Compile Include="Assets\Scripts\UI\GameUIHandler.cs" />
     <None Include="Library\PackageCache\com.unity.collab-proxy@2.2.0\Lib\Editor\PlasticSCM\Localization\commontypes.ko.txt" />
     <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -496,7 +500,13 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>C:\Users\Lietotajs\Documents\Personal\UnityCourseWork\Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <HintPath>C:\Users\Ikars\Documents\UnityCourseWork\Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Android.Types">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Android.Gradle">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.35f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -930,6 +940,10 @@
       <Project>{737317b0-d5df-c52d-922d-702c6cb12606}</Project>
       <Name>Unity.ShaderGraph.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.XR.MockHMD.csproj">
+      <Project>{3925cb0d-c149-465f-7be3-193339f5ef13}</Project>
+      <Name>Unity.XR.MockHMD</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.XR.Interaction.Toolkit.Samples.DeviceSimulator.csproj">
       <Project>{f8dd300b-f60f-5d57-3a97-99705892ba70}</Project>
       <Name>Unity.XR.Interaction.Toolkit.Samples.DeviceSimulator</Name>
@@ -1010,6 +1024,10 @@
       <Project>{4d375ba6-92f1-ec6c-24a7-d05d570f0b36}</Project>
       <Name>Unity.XR.OpenXR.Features.OculusQuestSupport</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.XR.MockHMD.Editor.csproj">
+      <Project>{b685167b-5348-f370-b294-fe717fd0552b}</Project>
+      <Name>Unity.XR.MockHMD.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Core.csproj">
       <Project>{07e9d632-7993-b5d9-88c7-7f0b56648eb8}</Project>
       <Name>Unity.VisualScripting.Core</Name>
@@ -1089,14 +1107,6 @@
     <ProjectReference Include="Unity.VisualScripting.State.csproj">
       <Project>{c7b0cf78-4f41-ac06-5137-98a0be5ec79e}</Project>
       <Name>Unity.VisualScripting.State</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.XR.MockHMD.csproj">
-      <Project>{3925cb0d-c149-465f-7be3-193339f5ef13}</Project>
-      <Name>Unity.XR.MockHMD</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.XR.MockHMD.Editor.csproj">
-      <Project>{b685167b-5348-f370-b294-fe717fd0552b}</Project>
-      <Name>Unity.XR.MockHMD.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

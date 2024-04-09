@@ -1,70 +1,77 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using DefaultNamespace.Models;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.XR.Management;
 
 public class DifficultySelectHandler : MonoBehaviour
 {
-    private List<SelectButtonHandler> _buttons;
+    private Dictionary<string, List<SelectButtonHandler>> _buttonGroups;
     public GameObject selectButtonPrefab;
     public RectTransform buttonContentBox;
-    public GameObject menuXRSetup;
-    private Dictionary<string, OsuMapVersion> _mapVersions;
-    public void ShowMenu(OsuMap map)
+    private OsuMap _currentMap;
+    public UnityEvent<OsuMapVersion> onMapSelected;
+
+    private void Start()
     {
-        Cleanup();
-        _mapVersions = new Dictionary<string, OsuMapVersion>(map.Versions);
-        _buttons = new List<SelectButtonHandler>();
-        foreach (var mapVersion in _mapVersions)
-        {
-            AddDifficultyButton(mapVersion.Value, mapVersion.Key);
-        }
-        gameObject.SetActive(true);
-    }
-    
-    public void HideMenu()
-    {
-        // TODO: Cleanup
-        gameObject.SetActive(false);
-        Cleanup();
+        
     }
 
+    public void ShowMenu(OsuMap map, Texture2D background)
+    {
+        Cleanup();
+        _currentMap = map;
+        _buttonGroups ??= new Dictionary<string, List<SelectButtonHandler>>();
+        
+        if (!_buttonGroups.ContainsKey(map.Title))
+        {
+            var buttons = map.Versions
+                .Select(kvp => BuildDifficultyButton(kvp.Value, kvp.Key, background))
+                .ToList();
+            _buttonGroups.Add(map.Title, buttons);
+        }
+        
+        ActivateButtons(map.Title);
+        gameObject.SetActive(true);
+    }
+
+    public void HideMenu() => gameObject.SetActive(false);
+
+    private void ActivateButtons(string mapKey)
+    {
+        foreach (var button in _buttonGroups[mapKey])
+        {
+            button.gameObject.SetActive(true);
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(buttonContentBox);
+    }
     private void Cleanup()
     {
-        if (_buttons is not null)
+        _currentMap = null;
+        if (_buttonGroups is not null)
         {
-            foreach(var button in _buttons) 
-                Destroy(button.gameObject);   
-            _buttons.Clear();
+            foreach (var button in _buttonGroups.SelectMany(group => group.Value))
+                button.gameObject.SetActive(false);
         }
-        _mapVersions?.Clear();    
     }
     
-    private void AddDifficultyButton(OsuMapVersion version, string key)
+    private SelectButtonHandler BuildDifficultyButton(OsuMapVersion version, string key, Texture2D background)
     {
         var button = Instantiate(selectButtonPrefab, buttonContentBox);
         var buttonHandler = button.GetComponent<SelectButtonHandler>();
-        buttonHandler.Init(version.FullTitle, version.BackgroundImage, key);
+        buttonHandler.Init(version.FullTitle, key, background);
         buttonHandler.onSelected += OnDifficultySelect;
-        _buttons.Add(buttonHandler);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(buttonContentBox);
+        return buttonHandler;
     }
 
     private void OnDifficultySelect(string mapVersionKey, bool isSelected)
     {
-        if (!_mapVersions.TryGetValue(mapVersionKey, out var version)) return;
-        Debug.Log($"Osu map version: {version.Title}, selected: {isSelected}");
         OsuMapProvider.SetActiveMapVersion(mapVersionKey);
-        Debug.Log($"SELECTED MAP: {OsuMapProvider.ActiveMap!.Title}, SELECTED VERSION: {OsuMapProvider.ActiveMapVersion!.FullTitle}");
-        StartCoroutine(LoadMainSceneAsync());
-    }
-    private IEnumerator LoadMainSceneAsync()
-    {
-        yield return SceneManager.LoadSceneAsync("Scenes/MainScene", LoadSceneMode.Single);
+        onMapSelected.Invoke(OsuMapProvider.ActiveMapVersion);
     }
 }
