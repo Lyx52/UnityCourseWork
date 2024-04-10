@@ -1,0 +1,3 @@
+base + ((OverallDifficulty/12)/100)
+
+base = 0.3
