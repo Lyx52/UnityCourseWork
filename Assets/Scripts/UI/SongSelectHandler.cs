@@ -48,6 +48,13 @@ public class SongSelectHandler : MonoBehaviour
     }
 
     private void DeselectAll() => _buttons.ForEach(df => df.SetSelected(false));
+
+    public void Reset()
+    {
+        DeselectAll();
+        gameObject.SetActive(true);
+        difficultySelectHandler.HideMenu();
+    }
     private void OnMapSelect(string mapKey, bool isSelected)
     {
         if (!_songList.TryGetValue(mapKey, out var map)) return;

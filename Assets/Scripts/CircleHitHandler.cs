@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using DefaultNamespace.Models;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CircleHitHandler : MonoBehaviour
@@ -9,13 +10,15 @@ public class CircleHitHandler : MonoBehaviour
     public LayerMask layer;
     public ControllerHand hand;
     public float maxRayDistance = 25;
-    public long triggerDelayMs = 3;
+    private long pauseDelayMs = 500;
     public float maxNearbyDistance = 1;
     public CircleSpawner circleSpawner;
     private ActionBasedController _controller;
+    public UnityEvent onGamePause;
     private bool IsTriggerPressed => _controller.activateActionValue.action.IsPressed();
-    private long lastTriggered = 0;
-    private bool CanTrigger => (DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastTriggered) > triggerDelayMs;
+    private bool IsPausePressed => _controller.selectActionValue.action.IsPressed();
+    private long lastPaused = 0;
+    private bool CanPause => (DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastPaused) > pauseDelayMs;
     void Start()
     {
         _controller = transform.GetComponent<ActionBasedController>();
@@ -23,9 +26,15 @@ public class CircleHitHandler : MonoBehaviour
 
     void Update()
     {
+        if (IsPausePressed && CanPause)
+        {
+            onGamePause.Invoke();
+            Debug.Log("CONTROLLER PAUSE");
+            lastPaused = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        }
         if(Physics.Raycast(transform.position, transform.forward, out var hit, maxRayDistance, layer))
         {
-            if (hit.transform.TryGetComponent(out CircleHandler handler) && IsTriggerPressed && CanTrigger)
+            if (hit.transform.TryGetComponent(out CircleHandler handler) && IsTriggerPressed)
             {
                 var nearby = circleSpawner.GetNearbyCircles(handler, maxNearbyDistance);
                 if (nearby.Any(ch => ch.IsHittable) && !handler.IsHittable)
@@ -36,7 +45,6 @@ public class CircleHitHandler : MonoBehaviour
                 }
                 
                 handler.OnControllerHit(hand);
-                lastTriggered = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             }
         }
     }

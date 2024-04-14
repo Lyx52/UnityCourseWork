@@ -8,6 +8,7 @@ namespace DefaultNamespace
     public static class SkyboxHandler
     {
         private static Texture2D _defaultTexture = new Texture2D(1, 1);
+        public static void ResetSkybox() => UpdateSkyboxTexture(Texture2D.blackTexture);
         public static void UpdateSkyboxTexture(Texture2D background)
         {
             RenderSettings.skybox.SetTexture("_FrontTex", background);    

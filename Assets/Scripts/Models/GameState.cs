@@ -4,6 +4,7 @@
     {
         MAIN_MENU,
         LOADING,
-        IN_GAME
+        IN_GAME,
+        PAUSED
     }
 }

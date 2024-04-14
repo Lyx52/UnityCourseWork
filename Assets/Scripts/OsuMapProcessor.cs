@@ -2,24 +2,29 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DefaultNamespace.Models;
 using JetBrains.Annotations;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 namespace DefaultNamespace
 {
     public static class OsuMapProcessor
     {
         public static readonly Vector2 OsuScreenSize = new Vector2(640f, 480f);
-
-        private static uint[] _allowedTypes =
-        {
-            1, 2
-        };
+        private const float MinCircleLifetime = 450;  // In ms
+        private const float MaxCircleLifetime = 1250;  // In ms
+        private const float MaxOverallDifficulty = 10.0f;
+        private const float MinOverallDifficulty = 1.0f;
+        private const float MinDistanceBetweenCircles = 1.1f;
+        private const float MinZSpeed = 0.06f;
+        private const float MaxZSpeed = 0.16f;
         public static OsuMapVersion ProcessMapVersion(string filePath)
         {
             var map = new OsuMapVersion();
@@ -48,6 +53,10 @@ namespace DefaultNamespace
                         {
                             ProcessEvents(sr, map);    
                         } break;
+                        case "[Difficulty]":
+                        {
+                            ProcessDifficulty(sr, map);    
+                        } break;
                     }
                 }
             }
@@ -58,22 +67,57 @@ namespace DefaultNamespace
         public static OsuMapVersion PostProcessHitObjects(this OsuMapVersion map)
         {
             if (map.HitObjects.Count <= 0) return map;
-            var hitObjects = new List<HitObject> { map.HitObjects.First() };
-            const float minDist = 0.01f;
-            const long minTimeDiff = 40;
-            for (int i = 0; i < map.HitObjects.Count - 1; i++)
+            map.ZSpeed = GetZSpeed(map.OverallDifficulty);
+            var circleLifetime = GetCircleLifetime(map.OverallDifficulty);
+            uint idx = 0;
+            
+            // Setup hit object
+            map.HitObjects.ForEach((hitObject) =>
             {
-                var first = map.HitObjects[i];
-                var second = map.HitObjects[i + 1];
-
-                var diffX = Math.Abs(first.X - second.X);
-                var diffY = Math.Abs(first.Y - second.Y);
-                var diffTime = Math.Abs(first.endedAt - second.endedAt);
-                if (diffX > minDist && diffY > minDist && diffTime > minTimeDiff) hitObjects.Add(second);
+                hitObject.EndTime = hitObject.StartTime + (uint)Math.Floor(circleLifetime);
+                hitObject.Lifetime = (uint)Math.Floor(circleLifetime);
+                hitObject.Id = ++idx;
+                hitObject.X *= 24f;
+                hitObject.Y *= 18f; 
+            });
+            
+            // Remove duplicates
+            var hitObjects = new List<HitObject>(map.HitObjects);
+            for (int i = 0; i < hitObjects.Count; i++)
+            {
+                var first = hitObjects[i];
+                foreach (var other in hitObjects.Skip(Math.Max(0, i - 5)).Take(10))
+                {
+                    if (other.Id == first.Id) continue;
+                    var dist = Math.Abs(first.Distance(other));
+                    var timeDiff = Math.Abs(first.StartTime - other.StartTime);
+                    if (dist <= MinDistanceBetweenCircles && timeDiff < first.Lifetime)
+                    {
+                        Debug.Log($"Removed obj with dist {dist} & time {timeDiff}");
+                        var removedObj = map.HitObjects.FirstOrDefault(obj => obj.Id == other.Id);
+                        if (removedObj is not null) map.HitObjects.Remove(removedObj);
+                    }
+                }    
+                
             }
-
-            map.HitObjects = hitObjects;
+            
             return map;
+        }
+        private static void ProcessDifficulty(StreamReader sr, OsuMapVersion map)
+        {
+            var line = sr.ReadLine();
+            while (!sr.EndOfStream && line?.Length > 2)
+            {
+                var parts = line.Split(':');
+                if (parts.Length < 2) break;
+                switch (parts[0].Trim())
+                {
+                    case "OverallDifficulty": 
+                        map.OverallDifficulty = float.TryParse(parts[1], NumberStyles.AllowDecimalPoint | NumberStyles.Any, CultureInfo.InvariantCulture, out var difficulty) ? difficulty : 1.0f;
+                        break;
+                }
+                line = sr.ReadLine();
+            }      
         }
         private static void ProcessGeneralInfo(StreamReader sr, OsuMapVersion map)
         {
@@ -164,7 +208,7 @@ namespace DefaultNamespace
             while (!sr.EndOfStream && line?.Length > 2)
             {
                 var obj = ParseHitObject(line);
-                if (obj is not null && _allowedTypes.Contains(obj.Type))
+                if (obj is not null)
                 {
                     map.HitObjects.Add(obj);    
                 }
@@ -180,16 +224,27 @@ namespace DefaultNamespace
             if (parts.Length < 2) return null;
             if (!float.TryParse(parts[0], out var x)) return null;
             if (!float.TryParse(parts[1], out var y)) return null;
-            if (!uint.TryParse(parts[2], out var playbackOffset)) return null;
+            if (!uint.TryParse(parts[2], out var startTime)) return null;
             if (!uint.TryParse(parts[3], out var objType)) return null;
             return new HitObject()
             {
                 // From corner relative to center relative
                 X = (float)(x - Math.Floor(OsuScreenSize.x / 2f)) / OsuScreenSize.x,
                 Y = (float)(y - Math.Floor(OsuScreenSize.y / 2f)) / OsuScreenSize.y,
-                endedAt = playbackOffset,
+                StartTime = startTime,
                 Type = objType
             };
+        }
+
+        private static float GetCircleLifetime(float difficulty) 
+            => MinCircleLifetime + (1 - (difficulty / MaxOverallDifficulty) + (MinOverallDifficulty / MaxOverallDifficulty)) * (MaxCircleLifetime - MinCircleLifetime);
+
+        private static float GetZSpeed(float difficulty) 
+            => MinZSpeed + ((difficulty / MaxOverallDifficulty) + (MinOverallDifficulty / MaxOverallDifficulty)) * (MaxZSpeed - MinZSpeed);
+
+        private static float Distance(this HitObject first, HitObject other)
+        {
+            return Vector2.Distance(first.Position, other.Position);
         }
     }
 }
