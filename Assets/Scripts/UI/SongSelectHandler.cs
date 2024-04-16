@@ -10,6 +10,7 @@ public class SongSelectHandler : MonoBehaviour
     public GameObject songSelectButtonPrefab;
     public RectTransform buttonContentBox;
     public DifficultySelectHandler difficultySelectHandler;
+    public LeaderboardHandler leaderboardHandler;
     public Dictionary<string, OsuMap> _songList;
     private Dictionary<string, Texture2D> _cachedTextures;
     public int currentlySelectedIdx = -1;
@@ -30,6 +31,7 @@ public class SongSelectHandler : MonoBehaviour
             AddMapButton(song.Value, song.Key, Texture2D.blackTexture);    
             _cachedTextures.Add(song.Key, Texture2D.blackTexture);
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(buttonContentBox);
     }
 
     private void AddMapButton(OsuMap map, string key, Texture2D background)
@@ -44,10 +46,9 @@ public class SongSelectHandler : MonoBehaviour
             buttonHandler.SetBorderActive(active);
         };
         _buttons.Add(buttonHandler);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(buttonContentBox);
     }
 
-    private void DeselectAll() => _buttons.ForEach(df => df.SetSelected(false));
+    private void DeselectAll() => _buttons?.ForEach(df => df.SetSelected(false));
 
     public void Reset()
     {
@@ -61,6 +62,7 @@ public class SongSelectHandler : MonoBehaviour
         Debug.Log($"Map: {map.Title}, selected: {isSelected}");
         if (isSelected)
         {
+            leaderboardHandler.gameObject.SetActive(false);
             difficultySelectHandler.ShowMenu(map, _cachedTextures[mapKey]);
             OsuMapProvider.SetActiveMap(mapKey);
         }

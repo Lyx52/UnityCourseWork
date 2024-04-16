@@ -11,9 +11,12 @@ public class UIHandler : MonoBehaviour
     public CircleSpawner circleSpawner;
     public GameObject mainMenuUI;
     public GameObject pauseMenuUI;
+    public GameObject startButton;
+    public LeaderboardHandler leaderboardHandler;
     public SongSelectHandler songSelectHandler;
+    public ScoreHandler scoreHandler;
     public GameState currentGameState = GameState.LOADING;
-
+    private OsuMapVersion _selectedMapVersion;
     void Start()
     {
         SwitchGameState(GameState.MAIN_MENU);
@@ -21,7 +24,10 @@ public class UIHandler : MonoBehaviour
     public void OnMapSelected(OsuMapVersion mapVersion)
     {
         Debug.Log($"SELECTED MAP: {mapVersion!.Title}, SELECTED VERSION: {mapVersion!.FullTitle}");
-        StartCoroutine(LoadMapAsync(mapVersion));
+        _selectedMapVersion = mapVersion;
+        startButton.SetActive(true);
+        leaderboardHandler.gameObject.SetActive(true);
+        leaderboardHandler.ShowLeaderboard(mapVersion.FullTitle);
     }
 
     private IEnumerator LoadMapAsync(OsuMapVersion mapVersion)
@@ -52,6 +58,21 @@ public class UIHandler : MonoBehaviour
     public void OnReturnToMenu()
     {
         SwitchGameState(GameState.MAIN_MENU);
+    }
+
+    public void OnMapFinished()
+    {
+        Debug.Log("GAME FINISHED!!!");
+        var record = scoreHandler.GetCurrentRecord(_selectedMapVersion.FullTitle, _selectedMapVersion.HitObjects.Count);
+        leaderboardHandler.AddScore(_selectedMapVersion.FullTitle, record);
+        SwitchGameState(GameState.MAIN_MENU);
+    }
+
+    public void OnStartGame()
+    {
+        startButton.SetActive(false);
+        leaderboardHandler.gameObject.SetActive(false);
+        StartCoroutine(LoadMapAsync(_selectedMapVersion));    
     }
     public void SwitchGameState(GameState state)
     {

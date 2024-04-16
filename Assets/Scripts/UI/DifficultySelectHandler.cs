@@ -56,19 +56,31 @@ public class DifficultySelectHandler : MonoBehaviour
         if (_buttonGroups is not null)
         {
             foreach (var button in _buttonGroups.SelectMany(group => group.Value))
+            {
+                button.SetSelected(false);
                 button.gameObject.SetActive(false);
+            }
         }
     }
-    
+
+    private void DeselectCurrent()
+    {
+        if (_buttonGroups.TryGetValue(_currentMap?.Title ?? string.Empty, out var buttons))
+            buttons.ForEach(btn => btn.SetSelected(false));
+    }
     private SelectButtonHandler BuildDifficultyButton(OsuMapVersion version, string key, Texture2D background)
     {
         var button = Instantiate(selectButtonPrefab, buttonContentBox);
         var buttonHandler = button.GetComponent<SelectButtonHandler>();
         buttonHandler.Init(version.FullTitle, key, background);
-        buttonHandler.onSelected += OnDifficultySelect;
+        buttonHandler.onSelected += (mapVersionKey, active) =>
+        {
+            DeselectCurrent();
+            OnDifficultySelect(mapVersionKey, active);
+            buttonHandler.SetBorderActive(active);
+        };
         return buttonHandler;
     }
-
     private void OnDifficultySelect(string mapVersionKey, bool isSelected)
     {
         OsuMapProvider.SetActiveMapVersion(mapVersionKey);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class CircleSpawner : MonoBehaviour
     public long spawnEarlyOffset = 1000;
     private float _zSpeed = 0.03f;
     public UnityEvent<HitPointResult> onHitResult;
-    public static UnityEvent OnMapFinished;
+    public UnityEvent onMapFinished;
     private long _playbackStartTime = 0;
     [CanBeNull] private AudioClip _currentAudioClip = null;
     private Queue<HitObject> _currentHitObjectQueue = new Queue<HitObject>();
@@ -35,13 +36,21 @@ public class CircleSpawner : MonoBehaviour
         {
             obj = _currentHitObjectQueue.Dequeue();
             SpawnCircle(new Vector3(obj.X, obj.Y, 0), obj.StartTime, obj.EndTime);
-        } 
-        if (_currentHitObjectQueue.Count <= 0)
+        }
+
+        if (_currentHitObjectQueue.Count <= 0 && _circles.Count <= 0)
         {
-            SetMapFinished(true);
+            StartCoroutine(StartMapFinished());
         }
     }
 
+    private IEnumerator StartMapFinished()
+    {
+        Debug.Log("Map finished...");
+        isPlaying = false;
+        yield return new WaitForSeconds(1.5f);
+        onMapFinished.Invoke();
+    }
     public void Init()
     {
         _currentHitObjectQueue = OsuMapProvider.ActiveMapVersion!.GetHitObjectQueue();
@@ -87,14 +96,9 @@ public class CircleSpawner : MonoBehaviour
         {
             DestroyImmediate(kvp.Key);
         }
-        if (audioSource is not null) audioSource.Pause();
+        if (audioSource is not null) audioSource.Stop();
         _circles.Clear();
         _currentHitObjectQueue.Clear();
-    }
-    
-    public void SetMapFinished(bool isFinished) {
-        if (OnMapFinished is not null && isFinished) OnMapFinished.Invoke();
-        gameObject.SetActive(false);    
     }
     public void SpawnCircle(Vector3 position, long startTime, long endTime)
     {
