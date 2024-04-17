@@ -1,0 +1,55 @@
+{
+  "Everything will freeze, UNDEAD CORPORATION, Extra": [
+    {
+      "Score": 59040,
+      "Combo": 51,
+      "ItemsHit": 787,
+      "ItemsTotal": 1250,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    },
+    {
+      "Score": 172260,
+      "Combo": 101,
+      "ItemsHit": 1049,
+      "ItemsTotal": 1245,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    },
+    {
+      "Score": 148120,
+      "Combo": 61,
+      "ItemsHit": 1330,
+      "ItemsTotal": 1245,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    },
+    {
+      "Score": 87105,
+      "Combo": 66,
+      "ItemsHit": 890,
+      "ItemsTotal": 1252,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    },
+    {
+      "Score": 62375,
+      "Combo": 57,
+      "ItemsHit": 768,
+      "ItemsTotal": 1252,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    },
+    {
+      "Score": 92920,
+      "Combo": 47,
+      "ItemsHit": 910,
+      "ItemsTotal": 1252,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Extra"
+    }
+  ],
+  "Everything will freeze, UNDEAD CORPORATION, Insane": [
+    {
+      "Score": 10110,
+      "Combo": 32,
+      "ItemsHit": 185,
+      "ItemsTotal": 542,
+      "MapKey": "Everything will freeze, UNDEAD CORPORATION, Insane"
+    }
+  ]
+}

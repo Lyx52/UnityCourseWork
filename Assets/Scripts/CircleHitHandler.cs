@@ -23,7 +23,17 @@ public class CircleHitHandler : MonoBehaviour
     {
         _controller = transform.GetComponent<ActionBasedController>();
     }
-
+    public void OnCircleHit(CircleHit hit) {
+        if (hit.Hand != hand) return;
+        switch(hit.HitResult) {
+            case HitPointResult.MaxPoints: {
+                _controller.SendHapticImpulse(0.4f, 0.025f);
+            } break;
+            case HitPointResult.HalfPoints: {
+                _controller.SendHapticImpulse(0.1f, 0.025f);
+            } break;
+        }   
+    }
     void Update()
     {
         if (IsPausePressed && CanPause)

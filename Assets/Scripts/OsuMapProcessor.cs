@@ -18,13 +18,13 @@ namespace DefaultNamespace
     public static class OsuMapProcessor
     {
         public static readonly Vector2 OsuScreenSize = new Vector2(640f, 480f);
-        private const float MinCircleLifetime = 450;  // In ms
-        private const float MaxCircleLifetime = 1250;  // In ms
+        private const float MinCircleLifetime = 500;  // In ms
+        private const float MaxCircleLifetime = 1000;  // In ms
         private const float MaxOverallDifficulty = 10.0f;
         private const float MinOverallDifficulty = 1.0f;
         private const float MinDistanceBetweenCircles = 1.1f;
-        private const float MinZSpeed = 0.06f;
-        private const float MaxZSpeed = 0.16f;
+        private const float MinZSpeed = 0.24f;
+        private const float MaxZSpeed = 0.33f;
         public static OsuMapVersion ProcessMapVersion(string filePath)
         {
             var map = new OsuMapVersion();

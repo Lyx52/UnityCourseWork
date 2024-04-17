@@ -24,7 +24,7 @@ public class CircleHandler : MonoBehaviour
     public long circleStartTimeMs = 0;
     public bool IsPaused { get; set; } = false;
     private bool IsVisible { get; set; } = true;
-    public Action<HitPointResult> OnCircleTriggered { get; set; }
+    public Action<CircleHit> OnCircleTriggered { get; set; }
     private HitPointResult _currentResult;
     private Coroutine _updateCoroutine;
     public bool IsHittable => _currentResult != HitPointResult.NoPoints;
@@ -105,11 +105,17 @@ public class CircleHandler : MonoBehaviour
         }
         stopwatch.Stop();
         Debug.Log($"Excpected ({circleEndTimeMs}-{circleStartTimeMs}): {circleEndTimeMs-circleStartTimeMs}, Actual: {stopwatch.ElapsedMilliseconds}");
-        OnCircleTriggered?.Invoke(HitPointResult.NoPoints);
+        OnCircleTriggered?.Invoke(new CircleHit() {
+            HitResult = HitPointResult.NoPoints,
+            Hand = ControllerHand.None
+        });
     }
     public void OnControllerHit(ControllerHand controllerHand)
     {
-        OnCircleTriggered?.Invoke(_currentResult);
+         OnCircleTriggered?.Invoke(new CircleHit() {
+            HitResult = _currentResult,
+            Hand = controllerHand
+        });
     }
     public void UpdatePosition(float zSpeed, Vector3 playerPosition)
     {

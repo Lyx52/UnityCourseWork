@@ -14,9 +14,9 @@ public class ScoreHandler : MonoBehaviour
     public TextMeshProUGUI comboText;
     public TextMeshProUGUI pointsText;
     
-    public void UpdateDisplay(HitPointResult result)
+    public void UpdateDisplay(CircleHit hit)
     {
-        switch (result)
+        switch (hit.HitResult)
         {
             case HitPointResult.MaxPoints:
             {
@@ -53,5 +53,11 @@ public class ScoreHandler : MonoBehaviour
             ItemsTotal = totalItems,
             MapKey = mapKey
         };
+    }
+    public void Reset() {
+        MaxCombo = 0;
+        CurrentCombo = 0;
+        CurrentPoints = 0;
+        CurrentCombo = 0;
     }
 }

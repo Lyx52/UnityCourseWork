@@ -65,6 +65,7 @@ public class UIHandler : MonoBehaviour
         Debug.Log("GAME FINISHED!!!");
         var record = scoreHandler.GetCurrentRecord(_selectedMapVersion.FullTitle, _selectedMapVersion.HitObjects.Count);
         leaderboardHandler.AddScore(_selectedMapVersion.FullTitle, record);
+        scoreHandler.Reset();
         SwitchGameState(GameState.MAIN_MENU);
     }
 

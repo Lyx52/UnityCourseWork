@@ -17,7 +17,7 @@ public class CircleSpawner : MonoBehaviour
     private Dictionary<GameObject, CircleHandler> _circles = new Dictionary<GameObject, CircleHandler>();
     public long spawnEarlyOffset = 1000;
     private float _zSpeed = 0.03f;
-    public UnityEvent<HitPointResult> onHitResult;
+    public UnityEvent<CircleHit> onHitResult;
     public UnityEvent onMapFinished;
     private long _playbackStartTime = 0;
     [CanBeNull] private AudioClip _currentAudioClip = null;
