@@ -24,10 +24,13 @@ public class SelectButtonHandler : MonoBehaviour
         toggleComponent.SetIsOnWithoutNotify(false);
         SetBorderActive(active);
     }
-
+    
     public void SetBackgroundImage(Texture2D texture)
     {
-        backgroundComponent.sprite = Sprite.Create(texture, backgroundComponent.sprite.rect, backgroundComponent.sprite.pivot);
+        Rect rect = new Rect(0, 0, texture.width, texture.height);
+
+        backgroundComponent.sprite = Sprite.Create(texture, rect, backgroundComponent.sprite.pivot);
     }
+    
     public void SetBorderActive(bool active) => borderComponent.gameObject.SetActive(active);
 }

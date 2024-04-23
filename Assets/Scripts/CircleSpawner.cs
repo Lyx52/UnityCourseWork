@@ -49,6 +49,10 @@ public class CircleSpawner : MonoBehaviour
         Debug.Log("Map finished...");
         isPlaying = false;
         yield return new WaitForSeconds(1.5f);
+        while (audioSource.isPlaying)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
         onMapFinished.Invoke();
     }
     public void Init()

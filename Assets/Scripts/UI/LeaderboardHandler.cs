@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +8,6 @@ using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Directory = UnityEngine.Windows.Directory;
 
 public class LeaderboardHandler : MonoBehaviour
 {
@@ -18,7 +15,8 @@ public class LeaderboardHandler : MonoBehaviour
     public RectTransform leaderboardContentPanel;
     private List<GameObject> leaderboardItems;
     [CanBeNull] private static Dictionary<string, List<LeaderboardRecord>> _leaderboardRecords;
-    private static string LeaderboardFileLocation => Path.Join(Directory.localFolder, "leaderboard.json");
+    private static string localFolder = Path.Join(Directory.GetCurrentDirectory(), "LocalState");
+    private static string LeaderboardFileLocation => Path.Join(localFolder, "leaderboard.json");
     
     private static Dictionary<string, List<LeaderboardRecord>> LeaderboardRecords
     {
@@ -33,7 +31,7 @@ public class LeaderboardHandler : MonoBehaviour
 
             try
             {
-                if (!Directory.Exists(Directory.localFolder)) Directory.CreateDirectory(Directory.localFolder);
+                if (!Directory.Exists(localFolder)) Directory.CreateDirectory(localFolder);
                 using var fs = File.OpenRead(LeaderboardFileLocation);
                 using var reader = new StreamReader(fs);
                 _leaderboardRecords = JsonConvert.DeserializeObject<Dictionary<string, List<LeaderboardRecord>>>(reader.ReadToEnd());
